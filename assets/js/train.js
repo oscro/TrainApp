@@ -55,7 +55,7 @@ function validateMyForm() {
 
 
 function update() {
-  $('#clock').text(moment().format('MMMM DD YYYY H:mm:ss'));
+    $('#clock').text(moment().format('MMMM DD YYYY H:mm:ss'));
 }
 
 setInterval(update, 1000);
@@ -130,7 +130,11 @@ function calcTime(e) {
 
 
 
-    var currentTime = moment().format("LT");
+    var tFrequency = e.val().frequency;
+
+
+
+    console.log(parseInt(tFrequency));
 
 
 
@@ -138,15 +142,81 @@ function calcTime(e) {
 
 
 
-    var minutesAwayFromFirstTrain = moment().diff(moment(beginTrain, "HH:HH"), "minutes");
+    var firstTimeConverted = moment(beginTrain, "HH:mm").subtract(1, "years");
 
 
 
-    var minutesAway = (e.val().frequency - (minutesAwayFromFirstTrain % e.val().frequency));
+    console.log(firstTimeConverted);
 
 
 
-    var nextArrival = moment().add(minutesAway, "minutes").format("h:mma");
+    var currentTime = moment();
+
+
+
+    console.log("CURRENT TIME: " + moment(currentTime).format("hh:mm"));
+
+
+
+    var diffTime = moment().diff(moment(firstTimeConverted), "minutes");
+
+
+
+    console.log("DIFFERENCE IN TIME: " + diffTime);
+
+
+
+    var tRemainder = diffTime % tFrequency;
+
+
+
+    console.log(tRemainder);
+
+
+
+    var tMinutesTillTrain = tFrequency - tRemainder;
+
+
+
+    console.log("MINUTES TILL TRAIN: " + tMinutesTillTrain);
+
+
+
+    var nextTrain = moment().add(tMinutesTillTrain, "minutes");
+
+
+
+    console.log("ARRIVAL TIME: " + moment(nextTrain).format("hh:mm"));
+
+
+
+    var nextArrival = moment(nextTrain).format("hh:mm");
+
+
+
+
+
+
+
+
+
+    // Old Code
+
+
+
+    //var minutesAwayFromFirstTrain = moment().diff(moment(beginTrain, "HH:mm"), "minutes");
+
+
+
+    //var minutesAway = (e.val().frequency - (minutesAwayFromFirstTrain % e.val().frequency));
+
+
+
+    //var nextArrival = moment(nextTrain).format("hh:mm");
+
+
+
+
 
 
 
@@ -158,15 +228,22 @@ function calcTime(e) {
 
 
 
-    console.log("Minutes Away From First Train " + minutesAwayFromFirstTrain);
+    console.log("Minutes Away From First Train " + tMinutesTillTrain);
 
 
 
-    console.log("Minutes Away: " + (minutesAway));
+    console.log("Minutes Away: " + nextTrain);
 
 
 
     console.log("Next Arrival: " + nextArrival + "\n _________________________________________");
+
+
+
+
+
+
+
 
 
     var htmlAppend = "<tr><td>";
@@ -179,23 +256,49 @@ function calcTime(e) {
 
         e.val().destination + htmlAppend2 + e.val().frequency + htmlAppend2 +
 
-        nextArrival + htmlAppend2 + minutesAway + htmlAppend2 + htmlAppend3;
+        nextArrival + htmlAppend2 + tMinutesTillTrain + htmlAppend2 + htmlAppend3;
 
 
 
     $("#displayTrain").append(htmlAppend4);
 
+
+
+
+
 };
 
-database.ref().on("child_added", function(childSnapshot){
 
-    console.log(childSnapshot);
+
+
+
+
+
+database.ref().on("child_added", function (childSnapshot) {
+
+
+
+    console.log(childSnapshot.val().name);
+
+    console.log(childSnapshot.val().destination);
+
+    console.log(childSnapshot.val().frequency);
+
+    console.log(childSnapshot.val().firstTrain);
+
+
+
+    //Calculations for next train
+
+
 
     calcTime(childSnapshot);
 
-}, function(errorObject) {
 
-    console.log("Errors handled: " + errorObject.code)
+
+}, function (errorObject) {
+
+    console.log("Errors handled: " + errorObject.code);
 
 });
 
