@@ -1,83 +1,164 @@
 <!doctype html>
+
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>Billable Hours</title>
 
-        
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-        <!-- <link rel="stylesheet" href="assets/css/reset.css"> -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/moment.min.js"></script>
+<head>
 
-        
-    </head>
-    <body>
-        <div class="container">
-            <div class="jumbotron border border-info mb-4 bg-dark text-white">
-                <div class="container">
-                    <h1 class="display-4 text-center">Employee Data Management</h1>
-                    <p class="lead text-center">A Comprehensive Directory of Employee Billable hours</p>
-                </div>
-            </div>  
+    <meta charset="UTF-8">
 
-            <div class="border border-info bg-info text-white p-2 rounded-top">
-                    <lable>Current Empoyees</lable>
-            </div>
-            <div class="rounded-bottom border border-info mb-4 p-2 bg-dark text-white" id="info">
-                    <table style="width:100%" id="showMe">
-                        <tr class="border-bottom">
-                            <th>Employee Name</th>
-                            <th>Role</th>
-                            <th>Start Date</th>
-                            <th>Months Worked</th>
-                            <th>Monthly Rate ($)</th>
-                            <th>Total Billed ($)</th>
-                        </tr>
-                        <tr>
-                            <td>Jill</td>
-                            <td>HR</td>
-                            <td>01/10/2018</td>
-                            <td>12</td>
-                            <td>10000</td>
-                            <td>120000</td>
-                        </tr>
-                        
-                    </table>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Train Database</title>
+
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+        crossorigin="anonymous">
+
+    <!-- <link rel="stylesheet" href="assets/css/reset.css"> -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/moment.min.js"></script>
+
+
+    <link rel="stylesheet" href="assets/css/style.css">
+
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="jumbotron border border-dark mb-4 bg-light text-dark">
+
+            <div class="container">
+
+                <h1 class="display-4 text-center">Train Schedule Database</h1>
+
+                <p class="lead text-center">A Comprehensive Data Pool of Train Schedules</p>
+
             </div>
 
-            <div class="border border-info bg-info text-white p-2 rounded-top">
-                <lable>Add Employee</lable>
-            </div>
-            <form class="border border-info bg-dark p-2 rounded-bottom mb-4">
-                    
-                    <div class="form-group">
-                      <label class="text-white" for="name">Employee Name</label>
-                      <input type="text" class="form-control border border-info" id="name">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="text-white" for="role">Role</label>
-                        <input type="text" class="form-control border border-info" id="role">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="text-white" for="date">Start Date (MM/DD/YYYY)</label>
-                        <input type="text" class="form-control border border-info" id="date">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="text-white rounded" for="rate">Monthly Rate</label>
-                        <input type="text" class="form-control border border-info" id="rate">
-                    </div>
-
-                    <button type="submit" class="btn btn-info" id="go">Submit</button>
-                </form>
-            
-            <script src="https://www.gstatic.com/firebasejs/5.7.3/firebase.js"></script>
-            <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-            <script type="text/javascript" src="assets/js/train.js" ></script>
-        
         </div>
-    </body>
+
+
+
+        <div class="border border-dark bg-light text-dark p-2">
+
+            <div class= "row" id = "freeze">
+                <lable class = "col-sm-3 border-right bg-dark text-white text-center" id = "trainSchedLable">Current Train Schedule</lable>
+                <div class = "col-sm-6">
+
+                </div>
+                <div class = "col-sm-3 text-center border-left bg-dark text-white" id = "clock">
+                Loading...
+                </div>
+            </div>
+        </div>
+
+        <div class="rounded-bottom border border-dark mb-4 p-2 bg-dark text-white" id="info">
+
+            <table id="displayTrain">
+
+                <tr class="border-bottom">
+
+                    <th>Train Name</th>
+
+                    <th>Destination</th>
+
+                    <th>Frequency (min)</th>
+
+                    <th>Next Arrival</th>
+
+                    <th>Minutes Away</th>
+
+                </tr>
+
+
+
+
+
+            </table>
+
+        </div>
+
+
+
+        <div class="border border-dark bg-light text-dark p-2">
+
+            <lable>Add Train</lable>
+
+        </div>
+
+        <form class="border border-success bg-dark p-2 rounded-bottom mb-4 needs-validation">
+
+
+
+            <div class="form-group">
+
+                <label class="text-white" for="name">Train Name</label>
+
+                <input type="text" class="form-control border border-dark" id="name" required>
+
+
+
+            </div>
+
+
+
+            <div class="form-group">
+
+                <label class="text-white" for="dest">Destination</label>
+
+                <input type="text" class="form-control border border-dark" id="dest" required>
+
+
+
+            </div>
+
+
+
+            <div class="form-group">
+
+                <label class="text-white" for="firstTrain">First Train Time (HH:MM - Military Time)</label>
+
+                <input type="text" class="form-control border border-dark" id="firstTrain" required>
+
+
+
+            </div>
+
+
+
+            <div class="form-group">
+
+                <label class="text-white" for="freq">Frequency (min)</label>
+
+                <input type="number" class="form-control border border-dark" id="freq" required>
+
+            </div>
+
+
+
+            <button type="submit" class="btn btn-outline-success btn-lg btn-block" id="go">Submit</button>
+
+        </form>
+
+
+
+
+
+    </div>
+
+
+
+    <script src="https://www.gstatic.com/firebasejs/5.7.3/firebase.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+
+    <script type="text/javascript" src="assets/js/train.js"></script>
+
+
+
+</body>
+
 </html>

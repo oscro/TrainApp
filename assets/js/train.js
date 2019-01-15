@@ -1,75 +1,207 @@
 var config = {
+
     apiKey: "AIzaSyA8AlgS_XkOB8clCmK6SWyHr9-4j393UOQ",
+
     authDomain: "test-app-edc64.firebaseapp.com",
+
     databaseURL: "https://test-app-edc64.firebaseio.com",
+
     projectId: "test-app-edc64",
+
     storageBucket: "test-app-edc64.appspot.com",
+
     messagingSenderId: "746317737743"
-  };
-  firebase.initializeApp(config);
 
-  var database = firebase.database();
-  console.log(database)
+};
 
-  var name = "";
-  var role = "";
-  var date = "";
-  var rate = "";
+firebase.initializeApp(config);
 
 
-$("#go").on("click", function(e){
-    
+
+var database = firebase.database();
+
+console.log(database)
+
+
+
+var name = "";
+
+var dest = "";
+
+var firstTrain = "";
+
+var freq = "";
+
+
+
+function validateMyForm() {
+
+    if (name == "" || dest == "" || firstTrain == "" || freq == "") {
+
+        alert("Please input values in the form fields!");
+
+        return false;
+
+    }
+
+
+
+
+
+    return true;
+
+}
+
+
+
+function update() {
+  $('#clock').text(moment().format('MMMM DD YYYY H:mm:ss'));
+}
+
+setInterval(update, 1000);
+
+
+$("#go").on("click", function (e) {
+
+
+
+
+
+
+
     e.preventDefault();
 
-     name = $("#name").val().trim();
-     role = $("#role").val().trim();
-     date = moment($("#date").val().trim(), "MM/DD/YYYY").format("X");
-     rate = $("#rate").val().trim();
-
-    database.ref().push({
-
-    name: name,
-    role: role,
-    date: date,
-    rate: rate,
-    dateAdded: firebase.database.ServerValue.TIMESTAMP
-
-    });
 
 
-    
-    
+    name = $("#name").val().trim();
+
+    dest = $("#dest").val().trim();
+
+    firstTrain = $("#firstTrain").val().trim();
+
+    freq = $("#freq").val().trim();
+
+
+
+    //if(moment(firstTrain).format("day") != moment().format("day")){
+
+
+
+    //console.log(THIS WORKS!!!!);
+
+
+
+    //console.log(moment().format("DDD")); 
+
+
+
+    //};
+
+
+
+    if (validateMyForm() == true) {
+
+
+
+        database.ref().push({
+
+
+
+            name: name,
+
+            destination: dest,
+
+            firstTrain: firstTrain,
+
+            frequency: freq,
+
+            dateAdded: firebase.database.ServerValue.TIMESTAMP
+
+        });
+
+        location.reload();
+
+    }
+
 });
+
+
+function calcTime(e) {
+
+
+
+    var currentTime = moment().format("LT");
+
+
+
+    var beginTrain = e.val().firstTrain;
+
+
+
+    var minutesAwayFromFirstTrain = moment().diff(moment(beginTrain, "HH:HH"), "minutes");
+
+
+
+    var minutesAway = (e.val().frequency - (minutesAwayFromFirstTrain % e.val().frequency));
+
+
+
+    var nextArrival = moment().add(minutesAway, "minutes").format("h:mma");
+
+
+
+    console.log("Current Time: " + currentTime);
+
+
+
+    console.log("First Train: " + beginTrain);
+
+
+
+    console.log("Minutes Away From First Train " + minutesAwayFromFirstTrain);
+
+
+
+    console.log("Minutes Away: " + (minutesAway));
+
+
+
+    console.log("Next Arrival: " + nextArrival + "\n _________________________________________");
+
+
+    var htmlAppend = "<tr><td>";
+
+    var htmlAppend2 = "</td><td>";
+
+    var htmlAppend3 = "</td></tr>";
+
+    var htmlAppend4 = htmlAppend + e.val().name + htmlAppend2 +
+
+        e.val().destination + htmlAppend2 + e.val().frequency + htmlAppend2 +
+
+        nextArrival + htmlAppend2 + minutesAway + htmlAppend2 + htmlAppend3;
+
+
+
+    $("#displayTrain").append(htmlAppend4);
+
+};
 
 database.ref().on("child_added", function(childSnapshot){
 
-    console.log(childSnapshot.val().name);
-    console.log(childSnapshot.val().role);
-    console.log(childSnapshot.val().date);
-    console.log(childSnapshot.val().rate);
+    console.log(childSnapshot);
 
-    var empStartPretty = moment.unix(date).format("MM/DD/YYYY");
-
-    var empMonths = moment().diff(moment(date, "X"), "months");
-
-    var empBilled = empMonths * rate; 
-
-    $("#showMe").append("<tr><td>"
-        + childSnapshot.val().name + "</td><td>"
-        + childSnapshot.val().role + "</td><td>"
-        + empStartPretty + "</td><td>"
-        + childSnapshot.val().date + "</td><td>"
-
-        + "" + "</td><td>"
-        + childSnapshot.val().rate + "</td><td>"
-        + empBilled + "</td><td>"
-        + "" + "</td></tr>"
-    );
-
+    calcTime(childSnapshot);
 
 }, function(errorObject) {
-    console.log("Errors handled: " + errorObject.code);
-  });
+
+    console.log("Errors handled: " + errorObject.code)
+
+});
+
+
+
+
 
 
 
